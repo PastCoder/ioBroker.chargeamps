@@ -241,7 +241,7 @@ class Chargeamps extends utils.Adapter {
 		const _rfidLength = await adapter.getStateAsync(chargepointId + ".Control.rfidLength_" + connectorId);  //TODO: Would be easier for the user and more robust, if the length is calculated instead of a separate field for it
 		const _rfidFormat = await adapter.getStateAsync(chargepointId + ".Control.rfidFormat_" + connectorId);
 		const _rfid = await adapter.getStateAsync(chargepointId + ".Control.rfid_" + connectorId);
-		const _externalTransactionId = await adapter.getStateAsync(
+		const _externalTransactionId = await adapter.getStateAsync(  //TODO: Is the external ID just a unique session ID? If yes, it could be generated in the script instead of being an iobroker object.
 			chargepointId + ".Control.externalTransactionId_" + connectorId,
 		);
 
