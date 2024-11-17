@@ -47,14 +47,14 @@ class Chargeamps extends utils.Adapter {
 		adapter.log.debug("api-key:" + this.config.apikey);
 		adapter.RefreshInterval = this.config.Interval;
 		adapter.log.info("Refresh Interval: " + adapter.RefreshInterval);
-		adapter.subscribeStates("chargeamps.0.2103029273M.Control.*");
+		adapter.subscribeStates("chargeamps.0.TG Grezzostraße.Control.*");		//TODO: States are hardcoded
 
 		await adapter.chargeampsLogin(this.config.email, this.config.password, this.config.apikey).then(() => {
 			adapter.log.debug("Started Charge Amps Adapter and logged in successfully");
 		});
 
 		if (adapter.RefreshInterval < 15) {
-			adapter.RefreshInterval = 15;
+			adapter.RefreshInterval = 15;  // TODO: This should also be restricted in the adapter settings page; add there also the unit "seconds"
 			adapter.log.info("Refresh Interval is too low. Set to 15 seconds");
 		}
 		adapter.refreshIntervalObject = setInterval(adapter.RefreshChargepoints, adapter.RefreshInterval * 1000);
@@ -103,12 +103,12 @@ class Chargeamps extends utils.Adapter {
 	onStateChange(id, state) {
 		if (state) {
 			// The state was changed
-			adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
+			adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);  //TODO: Why are here other quote characters used than in other log outputs?
 			const tmp = id.split(".");
 			adapter.log.info("Command? : " + tmp[tmp.length - 2]);
 			adapter.log.info("Setting? : " + tmp[tmp.length - 1]);
 			adapter.log.info("Adapter: " + tmp[2]);
-			switch (tmp[tmp.length - 2]) {
+			switch (tmp[tmp.length - 2]) {   //TODO: That's quite cryptic; for easier maintenance would be good to copy from tmp to variables for command, setting, adapter
 				case "Control":
 					switch (tmp[tmp.length - 1].split("_")[0]) {
 						case "Reboot":
@@ -166,7 +166,7 @@ class Chargeamps extends utils.Adapter {
 			try {
 				const options = {
 					method: "POST",
-					url: "https://eapi.charge.space/api/v4/auth/login",
+					url: "https://eapi.charge.space/api/v4/auth/login",  //TODO: Latest API is v5; did not check the differences yet
 					headers: {
 						"Content-Type": "application/json",
 						apiKey: apiKey,
@@ -236,7 +236,7 @@ class Chargeamps extends utils.Adapter {
 		adapter.log.info("Remote Start Chargepoint " + chargepointId, connectorId);
 
 		// Get RFID settings
-		const _rfidLength = await adapter.getStateAsync(chargepointId + ".Control.rfidLength_" + connectorId);
+		const _rfidLength = await adapter.getStateAsync(chargepointId + ".Control.rfidLength_" + connectorId);  //TODO: Would be easier for the user and more robust, if the length is calculated instead of a separate field for it
 		const _rfidFormat = await adapter.getStateAsync(chargepointId + ".Control.rfidFormat_" + connectorId);
 		const _rfid = await adapter.getStateAsync(chargepointId + ".Control.rfid_" + connectorId);
 		const _externalTransactionId = await adapter.getStateAsync(
@@ -246,7 +246,7 @@ class Chargeamps extends utils.Adapter {
 		adapter.log.debug("RfidLength: " + _rfidLength.val);
 		adapter.log.debug("RfidFormat: " + _rfidFormat.val);
 		adapter.log.debug("Rfid: " + _rfid.val);
-		adapter.log.debug("ExternalTransactionId: " + _externalTransactionId.val);
+		adapter.log.debug("ExternalTransactionId: " + _externalTransactionId.val);   //TODO: Question: I did not find any information in the API what this external ID is!?
 
 		try {
 			const options = {
@@ -276,9 +276,9 @@ class Chargeamps extends utils.Adapter {
 				adapter.log.debug("Statuscode: " + adapter.statuscode);
 				adapter.log.debug("Response:" + JSON.stringify(response));
 				if (response.statusCode == 200) {
-					adapter.log.debug("Remote Stop successful");
+					adapter.log.debug("Remote Stop successful");  //TODO: Wrong log message, because it is in "start" function
 				} else {
-					adapter.log.error("Remote stop failed, probably still charging");
+					adapter.log.error("Remote stop failed, probably still charging");  //TODO: Wrong log message, because it is in "start" function
 				}
 			});
 		} catch (error) {
@@ -449,7 +449,7 @@ class Chargeamps extends utils.Adapter {
 				adapter.log.debug("Chargepoints: " + adapter.chargepoints.length);
 				for (let x = 0; x < adapter.chargepoints.length; x++) {
 					await adapter.chargeampsGetChargepointStatus(adapter.chargepoints[x]);
-					if (adapter.statuscode == 401) {
+					if (adapter.statuscode == 401) {  //TODO: Wouldn't it be more robust to refresh before topken exires? Worst case would be an access to control function before the refresh was done.
 						adapter.log.debug("Token expired, refreshing");
 						adapter.logged_in = false;
 						const result = await adapter.chargeampsLogin(adapter.email, adapter.password, adapter.apiKey);
