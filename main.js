@@ -106,7 +106,7 @@ class Chargeamps extends utils.Adapter {
 			adapter.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);  //TODO: Why are here other quote characters used than in other log outputs?
 			const tmp = id.split(".");
 			adapter.log.info("Command? : " + tmp[tmp.length - 2]);
-			adapter.log.info("Setting? : " + tmp[tmp.length - 1]);
+			adapter.log.info("Setting? : " + tmp[tmp.length - 1]  + "     Action: " + tmp[tmp.length - 1].split("_")[0]);  //TODO: Modified to better see the variables for the case-statements
 			adapter.log.info("Adapter: " + tmp[2]);
 			switch (tmp[tmp.length - 2]) {   //TODO: That's quite cryptic; for easier maintenance would be good to copy from tmp to variables for command, setting, adapter
 				case "Control":
@@ -133,6 +133,8 @@ class Chargeamps extends utils.Adapter {
 							if (state.val == true) adapter.chargeampsDisableCallbacks();
 							adapter.setState(id, false, true);
 							break;
+						default:
+							adapter.log.info("Unknown command: " + tmp[tmp.length - 1].split("_")[0]); //TODO: Added to understand better, why nothing happens.
 					}
 			}
 		} else {
