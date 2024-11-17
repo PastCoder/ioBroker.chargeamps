@@ -537,7 +537,7 @@ class Chargeamps extends utils.Adapter {
 			await adapter.setObjectNotExistsAsync(chargerId + ".Control.EnableCallbacks", {
 				type: "state",
 				common: {
-					name: "Reboot",
+					name: "Reboot",  // TODO: Name does not fit to the state (same for several states below)
 					role: "value",
 					read: true,
 					write: true,
