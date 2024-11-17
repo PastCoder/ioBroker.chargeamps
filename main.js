@@ -255,7 +255,7 @@ class Chargeamps extends utils.Adapter {
 				method: "PUT",
 				url:
 					"https://eapi.charge.space/api/v4/chargepoints/" +
-					chargepointId +
+					chargepointId +    //TODO: If chargpoint name contains a blank this may cause problems because URL is not encoded (blank to %20)
 					"/connectors/" +
 					connectorId +
 					"/remotestart",
